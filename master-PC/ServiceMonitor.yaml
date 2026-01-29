@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: node-exporter
+  namespace: monitoring
+  labels:
+    # This label ensures the Prometheus Operator picks up this ServiceMonitor
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      # !! CHANGE THIS TO MATCH YOUR NODE EXPORTER POD LABELS !!
+      app: node-exporrer
+  endpoints:
+    - port: metrics  # Changed to the common 'metrics' port name
+      interval: 30s  # <-- Corrected Indentation
+  namespaceSelector:
+    matchNames:
+    - monitoring
+

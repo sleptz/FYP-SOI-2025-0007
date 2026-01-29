@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peaks-scheduler
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: peaks
+  template:
+    metadata:
+      labels:
+        app: peaks
+    spec:
+      containers:
+      - name: peaks
+        image: ghcr.io/sustainable-computing-io/peaks:latest
+        args:
+        - --scheduler-name=peaks-scheduler

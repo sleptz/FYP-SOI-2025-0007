@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: stub-peaks-scheduler
+  namespace: kube-system
+spec:
+  hostPID: true
+  containers:
+  - name: stub-peaks
+    image: python:3.9-slim
+    command: ["/usr/local/bin/python3","/root/stub-peaks-scheduler.py"]
+    volumeMounts:
+    - mountPath: /root/stub-peaks-scheduler.py
+      name: scheduler-binary
+      readOnly: true
+  volumes:
+  - name: scheduler-binary
+    hostPath:
+      path: /root/stub-peaks-scheduler.py
+      type: File

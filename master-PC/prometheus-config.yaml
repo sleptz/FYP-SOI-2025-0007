@@ -1,0 +1,31 @@
+apiVersion: v1
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets: ['localhost:9090']
+
+      - job_name: kepler
+        metrics_path: /metrics
+        static_configs:
+          - targets:
+              - kepler.kepler.svc.cluster.local:28282
+
+      - job_name: 'node-exporter'
+        static_configs:
+          - targets:
+              - node-exporter.monitoring.svc.cluster.local:9100
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"prometheus.yml":"global:\n  scrape_interval: 15s\n\nscrape_configs:\n  - job_name: kepler\n    metrics_path: /metrics\n    static_configs:\n      - targets:\n          - kepler.kepler.svc.cluster.local:28282\n    - role: pod\n      namespaces:\n        names:\n        - kepler\n    relabel_configs:\n    - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]\n      action: keep\n      regex: kepler\n    - source_labels: [__meta_kubernetes_pod_ip]\n      target_label: __address__\n      replacement: $1:28282\n\n  - job_name: 'node-exporter'\n    static_configs:\n      - targets:\n          - node-exporter.monitoring.svc.cluster.local:9100\n"},"kind":"ConfigMap","metadata":{"annotations":{},"creationTimestamp":"2025-12-15T07:50:26Z","name":"prometheus-config","namespace":"monitoring","resourceVersion":"1588661","uid":"de491002-8e7b-456e-be3a-f67ab9a8f119"}}
+  creationTimestamp: "2025-12-15T07:50:26Z"
+  name: prometheus-config
+  namespace: monitoring
+  resourceVersion: "1589142"
+  uid: de491002-8e7b-456e-be3a-f67ab9a8f119

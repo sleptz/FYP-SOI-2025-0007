@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peaks-scheduler
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: peaks-scheduler
+  template:
+    metadata:
+      labels:
+        app: peaks-scheduler
+    spec:
+      serviceAccountName: peaks-scheduler
+      containers:
+      - name: peaks-scheduler
+        image: Dockerfile/peaks-scheduler:latest
+        command:
+        - /bin/peaks-scheduler
+        args:
+        - --config=/etc/peaks/config.yaml
+        volumeMounts:
+        - name: config
+          mountPath: /etc/peaks
+      volumes:
+      - name: config
+        configMap:
+          name: peaks-scheduler-config
